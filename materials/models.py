@@ -21,7 +21,9 @@ class Lessons(models.Model):
     )
     description = models.TextField(blank=True, null=True, verbose_name="Описание урока")
     link = models.CharField(max_length=10000, blank=True, null=True, verbose_name="Ссылка на видео")
-    courses = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Курс")
+    courses = models.ForeignKey(
+        Courses, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Курс", related_name="lessons"
+    )
 
     def __str__(self):
         return self.title
