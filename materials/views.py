@@ -1,9 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+
 from .models import Courses, Lessons
+from .permissions import IsOwnerPermission, ModersPermission
 from .serializers import CoursesModelSerializer, LessonsModelSerializer
-from .permissions import ModersPermission, IsOwnerPermission
+
 
 class CoursesViewSet(viewsets.ModelViewSet):
     serializer_class = CoursesModelSerializer

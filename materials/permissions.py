@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class ModersPermission(BasePermission):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name='Moders').exists()
+        return request.user.groups.filter(name="Moders").exists()
 
 
 class IsOwnerPermission(BasePermission):
