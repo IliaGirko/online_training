@@ -10,6 +10,7 @@ class Courses(models.Model):
     owner = models.ForeignKey(
         AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Создатель курса"
     )
+    link = models.CharField(max_length=10000, blank=True, null=True, verbose_name="Ссылка на видео")
 
     def __str__(self):
         return self.title
@@ -39,3 +40,20 @@ class Lessons(models.Model):
     class Meta:
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Пользователь"
+    )
+    course = models.ForeignKey(
+        Courses, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Курс", related_name="courses"
+    )
+    subscription = models.BooleanField(default=False, verbose_name="Подписка")
+
+    def __str__(self):
+        return "Статус активной подписки"
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
