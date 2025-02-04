@@ -23,15 +23,7 @@ class CoursesModelSerializer(ModelSerializer):
     def get_subscription(self, key):
         return Subscription.objects.filter(course=key).exists()
 
-
     class Meta:
         model = Courses
         fields = "__all__"
         validators = [CorrectUrl(field="link")]
-
-
-class SubscriptionModelSerializer(ModelSerializer):
-
-    class Meta:
-        model = Subscription
-        fields = "__all__"
