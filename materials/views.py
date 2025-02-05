@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from .models import Courses, Lessons, Subscription
 from .paginators import PageSizePaginator
 from .permissions import IsOwnerPermission, ModersPermission
-from .serializers import CoursesModelSerializer, LessonsModelSerializer, SubscriptionModelSerializer
+from .serializers import CoursesModelSerializer, LessonsModelSerializer
 
 
 class CoursesViewSet(viewsets.ModelViewSet):
@@ -48,8 +48,9 @@ class LessonsUpdateAPIView(UpdateAPIView):
 
 
 class LessonsDestroyAPIView(DestroyAPIView):
+    queryset = Lessons.objects.all()
     serializer_class = LessonsModelSerializer
-    permission_classes = [IsAuthenticated, ~ModersPermission, IsOwnerPermission]
+    permission_classes = [IsAuthenticated, IsOwnerPermission | ~ModersPermission]
 
 
 class LessonsRetrieveAPIView(RetrieveAPIView):
@@ -71,28 +72,6 @@ class LessonsListAPIView(ListAPIView):
             return Lessons.objects.filter(owner=self.request.user)
 
 
-class SubscriptionCreateAPIView(CreateAPIView):
-    serializer_class = SubscriptionModelSerializer
-    queryset = Subscription.objects.all()
-    permission_classes = [IsAuthenticated, ~ModersPermission]
-
-    def perform_create(self, serializer):
-        subscription_status = serializer.save()
-        subscription_status.subscription = True
-        subscription_status.save()
-
-
-
-class SubscriptionDestroyAPIView(DestroyAPIView):
-    serializer_class = SubscriptionModelSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = Subscription.objects.all()
-
-    def destroy(self, request, *args, **kwargs):
-        self.request.subscription = False
-        return Response({"message":'подписка удалена'})
-
-
 class SubscriptionAPIView(APIView):
     def post(self, *args, **kwargs):
         user = self.request.user
@@ -106,5 +85,4 @@ class SubscriptionAPIView(APIView):
         else:
             Subscription.objects.create(user=user, course=course_item)
             message = "подписка добавлена"
-        return Response({"message":message})
-
+        return Response({"message": message})
