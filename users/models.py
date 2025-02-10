@@ -41,3 +41,5 @@ class Payments(models.Model):
     payment_method = models.CharField(
         max_length=25, choices=SELECT_PAYMENT_METHOD, default="C", verbose_name="Способ оплаты"
     )
+
+    payment_link = models.URLField(max_length=400, blank=True, null=True, verbose_name="Ссылка на оплату")

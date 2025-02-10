@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -72,7 +74,13 @@ class LessonsListAPIView(ListAPIView):
             return Lessons.objects.filter(owner=self.request.user)
 
 
+
+
 class SubscriptionAPIView(APIView):
+    @swagger_auto_schema(
+        operation_description='При добавлении подписки возвращает {"message":"подписка добавлена"}, '
+                              'при отмене подписки возвращает {"message":"подписка удалена"}'
+    )
     def post(self, *args, **kwargs):
         user = self.request.user
         course_id = self.request.data.get("course")
