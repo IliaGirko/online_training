@@ -11,6 +11,7 @@ from .models import Courses, Lessons, Subscription
 from .paginators import PageSizePaginator
 from .permissions import IsOwnerPermission, ModersPermission
 from .serializers import CoursesModelSerializer, LessonsModelSerializer
+from .tasks import send_mail_after_course_update
 
 
 class CoursesViewSet(viewsets.ModelViewSet):
@@ -21,6 +22,7 @@ class CoursesViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+        send_mail_after_course_update.delay()
 
     def get_permissions(self):
         if self.action == "create":
@@ -74,12 +76,10 @@ class LessonsListAPIView(ListAPIView):
             return Lessons.objects.filter(owner=self.request.user)
 
 
-
-
 class SubscriptionAPIView(APIView):
     @swagger_auto_schema(
         operation_description='При добавлении подписки возвращает {"message":"подписка добавлена"}, '
-                              'при отмене подписки возвращает {"message":"подписка удалена"}'
+        'при отмене подписки возвращает {"message":"подписка удалена"}'
     )
     def post(self, *args, **kwargs):
         user = self.request.user
