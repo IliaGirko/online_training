@@ -15,8 +15,13 @@ services:
 
   db:
     image: postgres
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
     expose:
       - "5432"
 
@@ -42,7 +47,7 @@ services:
     depends_on:
       - redis
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
 
   celery_beat:
     build:
@@ -52,8 +57,9 @@ services:
       - .:/app
     depends_on:
       - redis
+      - celery_worker
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
 
 volumes:
   postgres_data:

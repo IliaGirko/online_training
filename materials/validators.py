@@ -9,7 +9,7 @@ class CorrectUrl:
         self.field = field
 
     def __call__(self, value):
-        reg = re.compile("^[a-zA-Z0-9\,\-\.\ ]+youtube.com")
+        reg = re.compile(r"^[a-zA-Z0-9\,\-\.\ ]+youtube.com")
         tmp_val = dict(value).get(self.field)
         if tmp_val:
             if not bool(reg.match(tmp_val)):
