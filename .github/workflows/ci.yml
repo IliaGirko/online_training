@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install
+          poetry install --no-root
 
       - name: Run flake8
         run: |
@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install    
+          poetry install --no-root   
           
       - name: Run tests
         run: |
