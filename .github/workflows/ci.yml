@@ -69,14 +69,14 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Log in Docker hub
-        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest -f Dockerfile .
+
+      - name: Log in Docker hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image in Docker hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest
 
   deploy:
     needs: build
@@ -84,29 +84,20 @@ jobs:
     env:
       SSH_KEY: ${{ secrets.SSH_KEY }}
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
 
     steps:
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
+      - name: SSH to server and deploy
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name: Debug SSH key
-        run: |
-          echo "SSH key:"
-          ls -l ~/.ssh/
-          ssh-add -l
-
-      - name: Add server to known hosts
-        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/web:${{ github.sha }}
-          docker stop web || true
-          docker rm web || true
-          docker run -d --name web -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/web:${{ github.sha }}
-          EOF
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            cd /path/to/your/project
+            docker-compose down
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest
+            docker-compose up -d --build
