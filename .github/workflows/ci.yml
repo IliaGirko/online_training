@@ -99,6 +99,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'E0F0'
           sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest
           sudo docker stop online_training || true
-          sudo docker rm online_training || true
+          sudo docker rm -f online_training || true
           sudo docker run -d --name online_training -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest
           E0F0
