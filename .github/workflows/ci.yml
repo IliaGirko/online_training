@@ -97,8 +97,8 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'E0F0'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:${{ github.sha }}
-          docker stop online_training || true
-          docker rm online_training || true
-          docker run -d --name online_training -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:${{ github.sha }}
+          sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:${{ github.sha }}
+          sudo docker stop online_training || true
+          sudo docker rm online_training || true
+          sudo docker run -d --name online_training -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:${{ github.sha }}
           E0F
