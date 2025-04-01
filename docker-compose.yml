@@ -7,12 +7,12 @@ services:
       bash -c "
         poetry run python manage.py collectstatic --noinput &&
         poetry run python manage.py migrate &&
-        poetry run python manage.py runserver 0.0.0.0:8080"
+        poetry run python manage.py runserver 0.0.0.0:8880"
     volumes:
       - .:/code
       - static_volume:/code/static
     ports:
-      - "8080:8080"
+      - "8880:8880"
     depends_on:
       - db
 
