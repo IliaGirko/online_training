@@ -73,13 +73,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:latest -f Dockerfile .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest -f Dockerfile .
 
       - name: Log in Docker hub
         run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image in Docker hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online_training:latest
 
   deploy:
     needs: build
@@ -116,7 +116,7 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << E0F0
-          cd habit_tracker
+          cd online_training
           printf "SECRET_KEY=%s\n" "$SECRET_KEY" > .env
           printf "DEBUG=%s\n" "$DEBUG" >> .env
           printf "POSTGRES_DB=%s\n" "$POSTGRES_DB" >> .env
@@ -134,8 +134,8 @@ jobs:
           printf "CELERY_BROKER_URL=%s\n" "$CELERY_BROKER_URL" >> .env
           printf "CELERY_RESULT_BACKEND=%s\n" "$CELERY_RESULT_BACKEND" >> .env
           sudo git pull
-          sudo docker stop habit_tracker || true
-          sudo docker rm -f habit_tracker || true
+          sudo docker stop online_training || true
+          sudo docker rm -f online_training || true
           sudo docker compose down -v
           sudo docker compose up -d --build
           E0F0
