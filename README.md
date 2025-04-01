@@ -96,5 +96,7 @@ docker-compose logs
 docker-compose down -v
 ```
 
+Адрес сервера: 89.169.173.119
+
 ## Лицензии
 Проект распространяеется под [лицензией MIT](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt)
