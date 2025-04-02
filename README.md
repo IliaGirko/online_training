@@ -72,7 +72,7 @@ JWT-авторизация реализована при помощи djangorest
 **Запуск проекта**
 1. Клонируйте репозиторий:
 ```
-git clone https://github.com/IliaGirko/online_training.git
+git clone https://github.com/IliaGirko/online_training.git -b feature/task08
 ```
 2. Переименуйте файл .env.example в .env в корне проекта и добавьте туда необходимые переменные окружения.
 3. Запустите проект, выполнив команду для запуска в фоновом режиме:
@@ -95,6 +95,8 @@ docker-compose logs
 ```
 docker-compose down -v
 ```
+
+Адрес сервера: 89.169.173.119:8880
 
 ## Лицензии
 Проект распространяеется под [лицензией MIT](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt)
